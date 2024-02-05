@@ -1,28 +1,30 @@
 const { pool } = require("../database/database");
 const { response } = require("../utils/apiResponse");
 
-const getAllCourses = async (req, res) => {
+const getAllSubjects = async (req, res) => {
   try {
-    const { rows: teachers } = await pool.query("SELECT * FROM vista_cursos");
+    const { rows: teachers } = await pool.query("SELECT * FROM vista_asignaturas");
     res.status(200).json(response(teachers, 200, "ok", "correcto"));
   } catch (err) {
     res.status(500).json(response(null, 500, "error", "Error al traer profesores"));
   }
 };
 
-const createCourses = async (req, res) => {
+const createSubjects = async (req, res) => {
   try {
     console.log(req.body);
-    const { id } = req.body;
+    const { nombre, descripcion, associated_teacher, associated_course } = req.body;
+    const params = [ nombre, descripcion, associated_teacher, associated_course ]
+    const query = "CALL registrar_asignatura($1, $2, $3, $4)"
 
-    await pool.query("CALL registrar_curso($1)", [id]);
+    await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "ok", "correcto"));
   } catch (error) {
-    res.status(500).json(response(null, 500, "error", "Error al registrar curso"));
+    res.status(500).json(response(null, 500, "error", "Error al registrar asignatura"));
   }
 };
 
-const deleteCourses = async (req, res) => {
+const deleteSubjects = async (req, res) => {
   try {
     const datos = req.body;
     if (datos && Array.isArray(datos) && datos.length > 0) {
@@ -49,7 +51,7 @@ const deleteCourses = async (req, res) => {
   }
 };
 
-const updateCourses = async (req, res) => {
+const updateSubjects = async (req, res) => {
   try {
     const { course, updatedCourse } = req.body;
     console.log(course, updatedCourse);
@@ -69,8 +71,8 @@ const updateCourses = async (req, res) => {
 };
 
 module.exports = {
-  getAllCourses,
-  createCourses,
-  deleteCourses,
-  updateCourses,
+  getAllSubjects,
+  createSubjects,
+  deleteSubjects,
+  updateSubjects,
 };
