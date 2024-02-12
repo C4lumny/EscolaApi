@@ -55,7 +55,7 @@ const updateTeachers = async (req, res) => {
     const contraseñaValida = await verificarContraseña(contraseñaActual, contraseñaHasheada);
 
     if (!contraseñaValida) {
-      return res.status(401).json(response(null, 401, "passwords doesnt match", "error"));
+      return res.status(401).json(response(null, 401, "pass_error", "error"));
     }
 
     const query = "CALL actualizar_profesor($1, $2, $3, $4, $5, $6, $7, $8)";

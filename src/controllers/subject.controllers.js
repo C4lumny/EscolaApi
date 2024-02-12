@@ -3,10 +3,10 @@ const { response } = require("../utils/apiResponse");
 
 const getAllSubjects = async (req, res) => {
   try {
-    const { rows: teachers } = await pool.query("SELECT * FROM vista_asignaturas");
-    res.status(200).json(response(teachers, 200, "ok", "correcto"));
+    const { rows: subjects } = await pool.query("SELECT * FROM vista_asignaturas");
+    res.status(200).json(response(subjects, 200, "ok", "correcto"));
   } catch (err) {
-    res.status(500).json(response(null, 500, "error", "Error al traer profesores"));
+    res.status(500).json(response(null, 500, "error", "Error al traer asignaturas"));
   }
 };
 
@@ -33,11 +33,11 @@ const deleteSubjects = async (req, res) => {
         // Lógica para borrar un solo registro
         const id_curso = datos[0].id;
         console.log(id_curso);
-        await pool.query("DELETE FROM cursos WHERE id = $1", [id_curso]);
+        await pool.query("DELETE FROM asignaturas WHERE id = $1", [id_curso]);
       } else {
         // Lógica para borrar varios registros
         const ids = datos.map((dato) => dato.id);
-        await pool.query(`DELETE FROM cursos WHERE id = ANY($1::text[])`, [ids]);
+        await pool.query(`DELETE FROM asignaturas WHERE id = ANY($1::text[])`, [ids]);
       }
       // Respuesta exitosa
       res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
@@ -53,13 +53,16 @@ const deleteSubjects = async (req, res) => {
 
 const updateSubjects = async (req, res) => {
   try {
-    const { course, updatedCourse } = req.body;
-    console.log(course, updatedCourse);
+    const { subject, updatedSubject } = req.body;
+    console.log(subject, updatedSubject);
 
-    const query = "CALL actualizar_curso($1, $2)";
+    const query = "CALL actualizar_asignatura($1, $2, $3, $4, $5)";
     const params = [
-      course.id,
-      updatedCourse.id,
+      subject.id,
+      updatedSubject.nombre,
+      updatedSubject.descripcion,
+      updatedSubject.associated_teacher,
+      updatedSubject.associated_course,
     ];
 
     await pool.query(query, params);
