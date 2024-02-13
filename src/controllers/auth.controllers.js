@@ -3,32 +3,11 @@ const { pool } = require("../database/database");
 const { response } = require('../utils/apiResponse')
 const jwt = require('jsonwebtoken');
 
-const registroEstudiante = (req, res) => {
-  // Lógica de registro para estudiantes
-  // ...
-
-  res.json({ mensaje: "Registro de estudiante exitoso" });
-};
-
-
 const registroAcudiente = (req, res) => {
   // Lógica de registro para acudientes
   // ...
   
   res.json({ mensaje: "Registro de acudiente exitoso" });
-};
-
-const registroProfesor = async (req, res) => {
-  try {
-    const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
-    const contraseñaEncriptada = await encriptarContraseña(contraseña);
-    await pool.query("CALL registrar_profesor($1, $2, $3, $4, $5, $6, $7)", [cedula, nombres, apellidos, correo, telefono, usuario, contraseñaEncriptada]);
-
-    res.status(201).json(response(req.body, 201, "correcto", "ok"));
-  } catch (err) {
-    console.error(err);
-    res.status(500).json(response(null, 400, "incorrecto", "profesor no registrado debido a errores"));
-  }
 };
 
 const registroAdministrador = async (req, res) => {
@@ -81,8 +60,6 @@ const login = async (req, res) => {
 };
 
 module.exports = {
-  registroEstudiante,
-  registroProfesor,
   registroAcudiente,
   registroAdministrador,
   login,

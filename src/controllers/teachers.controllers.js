@@ -11,6 +11,19 @@ const getAllTeachers = async (req, res) => {
   }
 };
 
+const createTeachers = async (req, res) => {
+  try {
+    const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
+    const contraseñaEncriptada = await encriptarContraseña(contraseña);
+    await pool.query("CALL registrar_profesor($1, $2, $3, $4, $5, $6, $7)", [cedula, nombres, apellidos, correo, telefono, usuario, contraseñaEncriptada]);
+
+    res.status(201).json(response(req.body, 201, "correcto", "ok"));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(response(null, 400, "incorrecto", "profesor no registrado debido a errores"));
+  }
+};
+
 const deleteTeachers = async (req, res) => {
   try {
     const datos = req.body;
@@ -72,7 +85,7 @@ const updateTeachers = async (req, res) => {
 
     await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));
-  } catch (err) {
+  } catch (err) {s
     console.error(err);
     return res.status(500).json(response(null, 500, "error", err));
   }
@@ -80,6 +93,7 @@ const updateTeachers = async (req, res) => {
 
 module.exports = {
   getAllTeachers,
+  createTeachers,
   deleteTeachers,
   updateTeachers,
 };
