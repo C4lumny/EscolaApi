@@ -13,9 +13,22 @@ const getAllStudents = async (req, res) => {
 
 const createStudent = async (req, res) => {
   try {
-    const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
+    const { nro_documento, nombres, apellidos, usuario, contraseña, associated_course, associated_parent } = req.body;
+    const document_type = parseInt(req.body.document_type);
     const contraseñaEncriptada = await encriptarContraseña(contraseña);
-    await pool.query("CALL registrar_profesor($1, $2, $3, $4, $5, $6, $7)", [cedula, nombres, apellidos, correo, telefono, usuario, contraseñaEncriptada]);
+    const query = "CALL registrar_estudiante($1, $2, $3, $4, $5, $6, $7, $8)";
+    const params = [
+      document_type,
+      nro_documento,
+      nombres,
+      apellidos,
+      usuario,
+      contraseñaEncriptada,
+      associated_parent,
+      associated_course,
+    ];
+
+    await pool.query(query, params);
 
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
   } catch (err) {
