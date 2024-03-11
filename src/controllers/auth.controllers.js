@@ -40,17 +40,10 @@ const login = async (req, res) => {
       return res.status(400).json(response(null, 400, 'error', 'Contraseña incorrecta'));
     }
 
-    const userForToken = {
-      usuario: usuario.username,
-      tipo_usuario: usuario.tipo_usuario
-    }
-
-    const token = jwt.sign(userForToken, '123');
-
     const user = {
       usuario: usuario.username,
       tipo_usuario: usuario.tipo_usuario,
-      token: token,
+      identificacion: usuario.identificacion,
     }
 
     res.status(200).json(response(user, 200, 'ok', 'Inicio de sesión correcto'));

@@ -33,43 +33,43 @@ const createParent = async (req, res) => {
 };
 
 const updateParent = async (req, res) => {
-    try {
-        const { parent, updatedParent } = req.body;
-    
-        console.log(req.body);
-    
-        // Validar los datos de entrada aquí...
-    
-        const contraseñaActual = updatedParent["contraseña_actual"];
-        const contraseñaHasheada = parent["contraseña"];
-        const contraseñaNueva = updatedParent["contraseña_nueva"];
-    
-        const hashedNewPassword = await encriptarContraseña(contraseñaNueva);
-    
-        const contraseñaValida = await verificarContraseña(contraseñaActual, contraseñaHasheada);
-    
-        if (!contraseñaValida) {
-          return res.status(401).json(response(null, 401, "pass_error", "error"));
-        }
-    
-        const query = "CALL actualizar_acudiente($1, $2, $3, $4, $5, $6, $7, $8)";
-        const params = [
-          parent.cedula,
-          updatedParent.cedula,
-          updatedParent.nombres,
-          updatedParent.apellidos,
-          updatedParent.correo,
-          updatedParent.telefono,
-          updatedParent.usuario,
-          hashedNewPassword,
-        ];
-    
-        await pool.query(query, params);
-        res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));
-      } catch (err) {
-        console.error(err);
-        return res.status(500).json(response(null, 500, "error", err));
-      }
+  try {
+    const { parent, updatedParent } = req.body;
+
+    console.log(req.body);
+
+    // Validar los datos de entrada aquí...
+
+    const contraseñaActual = updatedParent["old_password"];
+    const contraseñaHasheada = parent["contraseña"];
+    const contraseñaNueva = updatedParent["new_password"];
+
+    const hashedNewPassword = await encriptarContraseña(contraseñaNueva);
+
+    const contraseñaValida = await verificarContraseña(contraseñaActual, contraseñaHasheada);
+
+    if (!contraseñaValida) {
+      return res.status(401).json(response(null, 401, "pass_error", "error"));
+    }
+
+    const query = "CALL actualizar_acudiente($1, $2, $3, $4, $5, $6, $7, $8)";
+    const params = [
+      parent.cedula,
+      updatedParent.cedula,
+      updatedParent.nombres,
+      updatedParent.apellidos,
+      updatedParent.correo,
+      updatedParent.telefono,
+      updatedParent.usuario,
+      hashedNewPassword,
+    ];
+
+    await pool.query(query, params);
+    res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json(response(null, 500, "error", err));
+  }
 };
 
 const deleteParent = async (req, res) => {

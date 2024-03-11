@@ -73,9 +73,21 @@ const updateSubjects = async (req, res) => {
   }
 };
 
+const getSubjectsByStudentId = async(req, res) => {
+  try {
+    const studentId = req.params.id;
+    const query = 'SELECT a.* FROM asignaturas a JOIN estudiantes e on e.identificacion = $1';
+    const { rows: subjects } = await pool.query(query, [studentId])
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ error: error.toString() }); // En caso de error, envía el error como respuesta
+  }
+};
+
 module.exports = {
   getAllSubjects,
   createSubjects,
   deleteSubjects,
   updateSubjects,
+  getSubjectsByStudentId,
 };
