@@ -1,9 +1,9 @@
 const { Pool } = require('pg');
 const pool = new Pool({
   user: 'nathan',
-  host: 'dpg-cmvs96gcmk4c73ajmr1g-a.oregon-postgres.render.com',
-  database: 'escoladb_pn5q',
-  password: 'nPO4tl0kYY7jzhYGu196VpccGXOHbvVn',
+  host: 'dpg-coqmoni1hbls73eqc290-a.oregon-postgres.render.com',
+  database: 'escoladb_0dvo',
+  password: 'Xvemp20utiv45mv3tVoA2ywfOZvAi7FR',
   port: 5432,
   ssl: true,
 });
