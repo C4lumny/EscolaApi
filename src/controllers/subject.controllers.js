@@ -14,8 +14,8 @@ const createSubjects = async (req, res) => {
   try {
     console.log(req.body);
     const { nombre, descripcion, associated_teacher, associated_course } = req.body;
-    const params = [ nombre, descripcion, associated_teacher, associated_course ]
-    const query = "CALL registrar_asignatura($1, $2, $3, $4)"
+    const params = [nombre, descripcion, associated_teacher, associated_course];
+    const query = "CALL registrar_asignatura($1, $2, $3, $4)";
 
     await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "ok", "correcto"));
@@ -26,19 +26,9 @@ const createSubjects = async (req, res) => {
 
 const deleteSubjects = async (req, res) => {
   try {
-    const datos = req.body;
-    if (datos && Array.isArray(datos) && datos.length > 0) {
-      // Verificar la cantidad de registros
-      if (datos.length === 1) {
-        // Lógica para borrar un solo registro
-        const id_curso = datos[0].id;
-        console.log(id_curso);
-        await pool.query("DELETE FROM asignaturas WHERE id = $1", [id_curso]);
-      } else {
-        // Lógica para borrar varios registros
-        const ids = datos.map((dato) => dato.id);
-        await pool.query(`DELETE FROM asignaturas WHERE id = ANY($1::text[])`, [ids]);
-      }
+    const id = req.params.id;
+    if (id) {
+      await pool.query("DELETE FROM asignaturas WHERE id = $1", [id]);
       // Respuesta exitosa
       res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
     } else {
@@ -73,11 +63,11 @@ const updateSubjects = async (req, res) => {
   }
 };
 
-const getSubjectsByStudentId = async(req, res) => {
+const getSubjectsByStudentId = async (req, res) => {
   try {
     const studentId = req.params.id;
-    const query = 'SELECT a.* FROM asignaturas a JOIN estudiantes e on e.identificacion = $1';
-    const { rows: subjects } = await pool.query(query, [studentId])
+    const query = "SELECT a.* FROM asignaturas a JOIN estudiantes e on e.identificacion = $1";
+    const { rows: subjects } = await pool.query(query, [studentId]);
     res.json(subjects);
   } catch (error) {
     res.status(500).json({ error: error.toString() }); // En caso de error, envía el error como respuesta

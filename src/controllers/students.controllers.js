@@ -13,6 +13,7 @@ const getAllStudents = async (req, res) => {
 
 const createStudent = async (req, res) => {
   try {
+    console.log(req.body);
     const { nro_documento, nombres, apellidos, usuario, contraseña, associated_course, associated_parent } = req.body;
     const document_type = parseInt(req.body.document_type);
     const contraseñaEncriptada = await encriptarContraseña(contraseña);
@@ -33,7 +34,7 @@ const createStudent = async (req, res) => {
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
   } catch (err) {
     console.error(err);
-    res.status(500).json(response(null, 400, "incorrecto", "profesor no registrado debido a errores"));
+    res.status(500).json(response(null, 400, "incorrecto", "estudiante no registrado debido a errores"));
   }
 };
 
@@ -60,14 +61,14 @@ const updateStudent = async (req, res) => {
     const query = "CALL actualizar_estudiante($1, $2, $3, $4, $5, $6, $7, $8, $9)";
     const params = [
       student.identificacion,
-      updatedStudent.tipo_documento,
-      updatedStudent.identificacion,
+      updatedStudent.nro_documento,
       updatedStudent.nombres,
       updatedStudent.apellidos,
       updatedStudent.usuario,
       hashedNewPassword,
-      updatedStudent.cedula_acudiente,
-      updatedStudent.id_curso,
+      updatedStudent.document_type,
+      updatedStudent.associated_parent,
+      updatedStudent.associated_course,
     ];
 
     await pool.query(query, params);
@@ -80,21 +81,13 @@ const updateStudent = async (req, res) => {
 
 const deleteStudent = async (req, res) => {
   try {
-    const datos = req.body;
-    if (datos && Array.isArray(datos) && datos.length > 0) {
-      // Verificar la cantidad de registros
-      if (datos.length === 1) {
-        // Lógica para borrar un solo registro
-        const estudiante_identificacion = datos[0].identificacion;
-        console.log(estudiante_identificacion);
-        await pool.query("DELETE FROM estudiantes WHERE identificacion = $1", [estudiante_identificacion]);
-      } else {
-        // Lógica para borrar varios registros
-        const ids = datos.map((dato) => dato.identificacion);
-        await pool.query(`DELETE FROM estudiantes WHERE identificacion = ANY($1::text[])`, [ids]);
-      }
+    const studentId = req.params.id;
+    console.log(studentId);
+    // Verificar si los datos son null o un objeto vacío
+    if (studentId) {
+      await pool.query("DELETE FROM estudiantes WHERE identificacion = $1", [studentId]);
       // Respuesta exitosa
-      res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
+      res.status(200).json(response(req.body, 200, "ok", "Registros eliminados con exito."));
     } else {
       // Datos no válidos
       res.status(400).json({ error: "Datos no válidos." });

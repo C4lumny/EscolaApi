@@ -7,7 +7,7 @@ router.get('/subjects', getAllSubjects);
 router.get('/subjects/:id', getSubjectsByStudentId);
 router.post('/subjects', createSubjects);
 router.put('/subjects', updateSubjects );
-router.delete('/subjects', deleteSubjects);
+router.delete('/subjects/:id', deleteSubjects);
 
 module.exports = {
     subjectsRouter: router,
