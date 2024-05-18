@@ -15,7 +15,15 @@ const createTeachers = async (req, res) => {
   try {
     const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
     const contraseñaEncriptada = await encriptarContraseña(contraseña);
-    await pool.query("CALL registrar_profesor($1, $2, $3, $4, $5, $6, $7)", [cedula, nombres, apellidos, correo, telefono, usuario, contraseñaEncriptada]);
+    await pool.query("CALL registrar_profesor($1, $2, $3, $4, $5, $6, $7)", [
+      cedula,
+      nombres,
+      apellidos,
+      correo,
+      telefono,
+      usuario,
+      contraseñaEncriptada,
+    ]);
 
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
   } catch (err) {
@@ -25,26 +33,9 @@ const createTeachers = async (req, res) => {
 };
 
 const deleteTeachers = async (req, res) => {
+  const idTeacher = req.params.id;
   try {
-    const datos = req.body;
-    if (datos && Array.isArray(datos) && datos.length > 0) {
-      // Verificar la cantidad de registros
-      if (datos.length === 1) {
-        // Lógica para borrar un solo registro
-        const profesor_cedula = datos[0].cedula;
-        console.log(profesor_cedula);
-        await pool.query("DELETE FROM profesores WHERE cedula = $1", [profesor_cedula]);
-      } else {
-        // Lógica para borrar varios registros
-        const ids = datos.map((dato) => dato.cedula);
-        await pool.query(`DELETE FROM profesores WHERE cedula = ANY($1::text[])`, [ids]);
-      }
-      // Respuesta exitosa
-      res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
-    } else {
-      // Datos no válidos
-      res.status(400).json({ error: "Datos no válidos." });
-    }
+    await pool.query("DELETE FROM profesores WHERE cedula = $1", [idTeacher]);
   } catch (error) {
     console.error("Error al eliminar registros:", error);
     res.status(500).json({ error: "Error interno del servidor." });
@@ -85,7 +76,8 @@ const updateTeachers = async (req, res) => {
 
     await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));
-  } catch (err) {s
+  } catch (err) {
+    s;
     console.error(err);
     return res.status(500).json(response(null, 500, "error", err));
   }

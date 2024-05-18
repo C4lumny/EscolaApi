@@ -23,26 +23,11 @@ const createCourses = async (req, res) => {
 };
 
 const deleteCourses = async (req, res) => {
+  const id = req.params.id;
   try {
-    const datos = req.body;
-    if (datos && Array.isArray(datos) && datos.length > 0) {
-      // Verificar la cantidad de registros
-      if (datos.length === 1) {
-        // Lógica para borrar un solo registro
-        const id_curso = datos[0].id;
-        console.log(id_curso);
-        await pool.query("DELETE FROM cursos WHERE id = $1", [id_curso]);
-      } else {
-        // Lógica para borrar varios registros
-        const ids = datos.map((dato) => dato.id);
-        await pool.query(`DELETE FROM cursos WHERE id = ANY($1::text[])`, [ids]);
-      }
-      // Respuesta exitosa
-      res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
-    } else {
-      // Datos no válidos
-      res.status(400).json({ error: "Datos no válidos." });
-    }
+    await pool.query("DELETE FROM cursos WHERE id = $1", [id]);
+    // Respuesta exitosa
+    res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
   } catch (error) {
     console.error("Error al eliminar registros:", error);
     res.status(500).json({ error: "Error interno del servidor." });
@@ -55,10 +40,7 @@ const updateCourses = async (req, res) => {
     console.log(course, updatedCourse);
 
     const query = "CALL actualizar_curso($1, $2)";
-    const params = [
-      course.id,
-      updatedCourse.id,
-    ];
+    const params = [course.id, updatedCourse.id];
 
     await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));

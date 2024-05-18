@@ -4,7 +4,7 @@ const { getAllTeachers, deleteTeachers, updateTeachers, createTeachers } = requi
 const router = Router();
 
 router.get('/teachers', getAllTeachers)
-router.delete('/teachers', deleteTeachers)
+router.delete('/teachers/:id', deleteTeachers)
 router.put('/teachers', updateTeachers )
 router.post('/teachers', createTeachers);
 

@@ -6,7 +6,7 @@ const router = Router();
 router.get('/courses', getAllCourses);
 router.post('/courses', createCourses);
 router.put('/courses', updateCourses );
-router.delete('/courses', deleteCourses);
+router.delete('/courses/:id', deleteCourses);
 
 module.exports = {
     coursesRouter: router,
