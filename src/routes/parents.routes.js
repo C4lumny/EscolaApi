@@ -6,7 +6,7 @@ const router = Router();
 router.get('/parents', getAllParents);
 router.post('/parents', createParent);
 router.put('/parents', updateParent);
-router.delete('/parents', deleteParent);
+router.delete('/parents/:id', deleteParent);
 
 module.exports = {
     parentsRouter: router,

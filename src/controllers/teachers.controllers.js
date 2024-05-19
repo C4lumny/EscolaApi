@@ -62,7 +62,7 @@ const updateTeachers = async (req, res) => {
       return res.status(401).json(response(null, 401, "pass_error", "error"));
     }
 
-    const query = "CALL actualizar_profesor($1, $2, $3, $4, $5, $6, $7, $8)";
+    const query = "CALL actualizar_profe  sor($1, $2, $3, $4, $5, $6, $7, $8)";
     const params = [
       teacher.cedula,
       updatedTeacher.cedula,

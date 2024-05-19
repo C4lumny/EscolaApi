@@ -13,17 +13,8 @@ const getAllParents = async (req, res) => {
 
 const createParent = async (req, res) => {
   try {
-    const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
-    const contraseñaEncriptada = await encriptarContraseña(contraseña);
-    await pool.query("CALL registrar_acudiente($1, $2, $3, $4, $5, $6, $7)", [
-      cedula,
-      nombres,
-      apellidos,
-      correo,
-      telefono,
-      usuario,
-      contraseñaEncriptada,
-    ]);
+    const { cedula, nombres, apellidos, correo, telefono } = req.body;
+    await pool.query("CALL registrar_acudiente($1, $2, $3, $4, $5)", [cedula, nombres, apellidos, correo, telefono]);
 
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
   } catch (err) {
@@ -38,21 +29,7 @@ const updateParent = async (req, res) => {
 
     console.log(req.body);
 
-    // Validar los datos de entrada aquí...
-
-    const contraseñaActual = updatedParent["old_password"];
-    const contraseñaHasheada = parent["contraseña"];
-    const contraseñaNueva = updatedParent["new_password"];
-
-    const hashedNewPassword = await encriptarContraseña(contraseñaNueva);
-
-    const contraseñaValida = await verificarContraseña(contraseñaActual, contraseñaHasheada);
-
-    if (!contraseñaValida) {
-      return res.status(401).json(response(null, 401, "pass_error", "error"));
-    }
-
-    const query = "CALL actualizar_acudiente($1, $2, $3, $4, $5, $6, $7, $8)";
+    const query = "CALL actualizar_acudiente($1, $2, $3, $4, $5, $6)";
     const params = [
       parent.cedula,
       updatedParent.cedula,
@@ -60,12 +37,10 @@ const updateParent = async (req, res) => {
       updatedParent.apellidos,
       updatedParent.correo,
       updatedParent.telefono,
-      updatedParent.usuario,
-      hashedNewPassword,
     ];
 
     await pool.query(query, params);
-    res.status(200).json(response(req.body, 200, "correcto", "registro realizado satisfactoriamente"));
+    res.status(200).json(response(req.body, 200, "correcto", "actualizacion realizado satisfactoriamente"));
   } catch (err) {
     console.error(err);
     return res.status(500).json(response(null, 500, "error", err));
@@ -73,26 +48,12 @@ const updateParent = async (req, res) => {
 };
 
 const deleteParent = async (req, res) => {
+  const parentId = req.params.id;
   try {
-    const datos = req.body;
-    if (datos && Array.isArray(datos) && datos.length > 0) {
-      // Verificar la cantidad de registros
-      if (datos.length === 1) {
-        // Lógica para borrar un solo registro
-        const acudiente_cedula = datos[0].cedula;
-        console.log(acudiente_cedula);
-        await pool.query("DELETE FROM acudientes WHERE cedula = $1", [acudiente_cedula]);
-      } else {
-        // Lógica para borrar varios registros
-        const ids = datos.map((dato) => dato.cedula);
-        await pool.query(`DELETE FROM acudientes WHERE cedula = ANY($1::text[])`, [ids]);
-      }
-      // Respuesta exitosa
-      res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
-    } else {
-      // Datos no válidos
-      res.status(400).json({ error: "Datos no válidos." });
-    }
+    // Lógica para borrar un solo registro
+    await pool.query("DELETE FROM acudientes WHERE cedula = $1", [parentId]);
+    // Respuesta exitosa
+    res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
   } catch (error) {
     console.error("Error al eliminar registros:", error);
     res.status(500).json({ error: "Error interno del servidor." });
