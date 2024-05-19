@@ -1,16 +1,16 @@
 const { pool } = require("../database/database");
 const { response } = require("../utils/apiResponse");
 
-const getAllParents = async (req, res) => {
+const getAllActivities = async (req, res) => {
   try {
-    const { rows: parents } = await pool.query("SELECT * FROM vista_acudientes");
+    const { rows: parents } = await pool.query("SELECT * FROM vista_actividades");
     res.status(200).json(response(parents, 200, "ok", "succesfull"));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const createParent = async (req, res) => {
+const createActivity = async (req, res) => {
   try {
     const { cedula, nombres, apellidos, correo, telefono } = req.body;
     await pool.query("CALL registrar_acudiente($1, $2, $3, $4, $5)", [cedula, nombres, apellidos, correo, telefono]);
@@ -22,7 +22,7 @@ const createParent = async (req, res) => {
   }
 };
 
-const updateParent = async (req, res) => {
+const updateActivity = async (req, res) => {
   try {
     const { parent, updatedParent } = req.body;
 
@@ -46,7 +46,7 @@ const updateParent = async (req, res) => {
   }
 };
 
-const deleteParent = async (req, res) => {
+const deleteActivity = async (req, res) => {
   const parentId = req.params.id;
   try {
     // Lógica para borrar un solo registro
@@ -60,8 +60,8 @@ const deleteParent = async (req, res) => {
 };
 
 module.exports = {
-  getAllParents,
-  createParent,
-  updateParent,
-  deleteParent,
+  getAllActivities,
+  createActivity,
+  updateActivity,
+  deleteActivity,
 };
