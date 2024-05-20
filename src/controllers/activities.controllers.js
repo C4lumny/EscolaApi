@@ -12,30 +12,38 @@ const getAllActivities = async (req, res) => {
 
 const createActivity = async (req, res) => {
   try {
-    const { cedula, nombres, apellidos, correo, telefono } = req.body;
-    await pool.query("CALL registrar_acudiente($1, $2, $3, $4, $5)", [cedula, nombres, apellidos, correo, telefono]);
+    const activity = req.body;
+    const params = [
+      activity.titulo,
+      activity.descripcion,
+      activity.date.from,
+      activity.date.to,
+      parseInt(activity.asignatura),
+    ];
+    const query = "CALL registrar_actividad($1, $2, $3, $4, $5)";
+    await pool.query(query, params);
 
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
   } catch (err) {
     console.error(err);
-    res.status(500).json(response(null, 400, "incorrecto", "acudiente no registrado debido a errores"));
+    res.status(500).json(response(null, 400, "incorrecto", "actividad no registrado debido a errores"));
   }
 };
 
 const updateActivity = async (req, res) => {
   try {
-    const { parent, updatedParent } = req.body;
+    const { activity, updatedActivity } = req.body;
 
     console.log(req.body);
 
-    const query = "CALL actualizar_acudiente($1, $2, $3, $4, $5, $6)";
+    const query = "CALL actualizar_actividad($1, $2, $3, $4, $5, $6)";
     const params = [
-      parent.cedula,
-      updatedParent.cedula,
-      updatedParent.nombres,
-      updatedParent.apellidos,
-      updatedParent.correo,
-      updatedParent.telefono,
+      activity.id,
+      updatedActivity.titulo,
+      updatedActivity.descripcion,
+      updatedActivity.date.from,
+      updatedActivity.date.to,
+      parseInt(updatedActivity.asignatura),
     ];
 
     await pool.query(query, params);
@@ -47,10 +55,10 @@ const updateActivity = async (req, res) => {
 };
 
 const deleteActivity = async (req, res) => {
-  const parentId = req.params.id;
+  const activityID = req.params.id;
   try {
     // Lógica para borrar un solo registro
-    await pool.query("DELETE FROM acudientes WHERE cedula = $1", [parentId]);
+    await pool.query("DELETE FROM actividades WHERE id = $1", [activityID]);
     // Respuesta exitosa
     res.status(200).json(response(null, 200, "ok", "Registros eliminados con exito."));
   } catch (error) {
