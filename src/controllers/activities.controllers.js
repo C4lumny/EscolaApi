@@ -10,6 +10,18 @@ const getAllActivities = async (req, res) => {
   }
 };
 
+const getAllActiveActivities = async (req, res) => {
+
+  const studentId = req.params.id;
+
+  try {
+    const { rows: parents } = await pool.query("SELECT * FROM obtener_actividades_activas_por_estudiante($1)", [studentId]);
+    res.status(200).json(response(parents, 200, "ok", "succesfull"));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const createActivity = async (req, res) => {
   try {
     const activity = req.body;
@@ -19,8 +31,9 @@ const createActivity = async (req, res) => {
       activity.date.from,
       activity.date.to,
       parseInt(activity.asignatura),
-    ];
-    const query = "CALL registrar_actividad($1, $2, $3, $4, $5)";
+      parseInt(activity.estado) == 0 ? false : true,
+    ];  
+    const query = "CALL registrar_actividad($1, $2, $3, $4, $5, $6)";
     await pool.query(query, params);
 
     res.status(201).json(response(req.body, 201, "correcto", "ok"));
@@ -36,7 +49,7 @@ const updateActivity = async (req, res) => {
 
     console.log(req.body);
 
-    const query = "CALL actualizar_actividad($1, $2, $3, $4, $5, $6)";
+    const query = "CALL actualizar_actividad($1, $2, $3, $4, $5, $6, $7)";
     const params = [
       activity.id,
       updatedActivity.titulo,
@@ -44,6 +57,7 @@ const updateActivity = async (req, res) => {
       updatedActivity.date.from,
       updatedActivity.date.to,
       parseInt(updatedActivity.asignatura),
+      parseInt(updatedActivity.estado) == 0 ? false : true,
     ];
 
     await pool.query(query, params);
@@ -69,6 +83,7 @@ const deleteActivity = async (req, res) => {
 
 module.exports = {
   getAllActivities,
+  getAllActiveActivities,
   createActivity,
   updateActivity,
   deleteActivity,
