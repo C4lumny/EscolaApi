@@ -10,7 +10,7 @@ const {
 const router = Router();
 
 router.get("/activities", getAllActivities);
-router.get("/activities/:id ", getAllActiveActivities);
+router.get("/activities/:id", getAllActiveActivities);
 router.post("/activities", createActivity);
 router.put("/activities", updateActivity);
 router.delete("/activities/:id", deleteActivity);

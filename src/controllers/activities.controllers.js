@@ -11,7 +11,6 @@ const getAllActivities = async (req, res) => {
 };
 
 const getAllActiveActivities = async (req, res) => {
-
   const studentId = req.params.id;
 
   try {
