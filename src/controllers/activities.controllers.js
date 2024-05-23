@@ -21,6 +21,17 @@ const getAllActiveActivities = async (req, res) => {
   }
 };
 
+const getAllSubjectActivities = async (req, res) => {
+  const subjectId = parseInt(req.params.id);
+
+  try {
+    const { rows: parents } = await pool.query("SELECT * FROM obtener_actividades_activas_por_asignatura($1)", [subjectId]);
+    res.status(200).json(response(parents, 200, "ok", "succesfull"));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const createActivity = async (req, res) => {
   try {
     const activity = req.body;
@@ -83,6 +94,7 @@ const deleteActivity = async (req, res) => {
 module.exports = {
   getAllActivities,
   getAllActiveActivities,
+  getAllSubjectActivities,
   createActivity,
   updateActivity,
   deleteActivity,
