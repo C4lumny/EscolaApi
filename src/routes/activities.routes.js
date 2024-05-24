@@ -3,6 +3,7 @@ const {
   createActivity,
   deleteActivity,
   getAllActivities,
+  getActivitiesById,
   getAllActiveActivities,
   getAllSubjectActivities,
   updateActivity,
@@ -11,7 +12,8 @@ const {
 const router = Router();
 
 router.get("/activities", getAllActivities);
-router.get("/activities/:id", getAllActiveActivities);
+router.get("/activities/:id", getActivitiesById);
+router.get("/activities/students/:id", getAllActiveActivities);
 router.get("/activities/subjects/:id", getAllSubjectActivities);
 router.post("/activities", createActivity);
 router.put("/activities", updateActivity);

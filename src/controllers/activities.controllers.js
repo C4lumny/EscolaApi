@@ -1,6 +1,17 @@
 const { pool } = require("../database/database");
 const { response } = require("../utils/apiResponse");
 
+const getActivitiesById = async (req, res) => {
+  const activityID = req.params.id
+
+  try{
+    const {rows: activities} = await pool.query("SELECT * FROM actividades where id = $1", [activityID])
+    res.status(200).json(response(activities, 200, "ok", "succesfull"));
+  }catch (err){
+    res.status(500).json({error: err.message});
+  }
+}
+
 const getAllActivities = async (req, res) => {
   try {
     const { rows: parents } = await pool.query("SELECT * FROM vista_actividades");
@@ -93,6 +104,7 @@ const deleteActivity = async (req, res) => {
 
 module.exports = {
   getAllActivities,
+  getActivitiesById,
   getAllActiveActivities,
   getAllSubjectActivities,
   createActivity,
