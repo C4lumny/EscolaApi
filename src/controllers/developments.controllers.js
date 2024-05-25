@@ -49,9 +49,6 @@ const deleteDevelopments = async (req, res) => {
 const updateDevelopments = async (req, res) => {
   try {
     const { id_actividad, id_estudiante, respuesta, solucion_id } = req.body;
-
-    console.log("me estoy activando");
-
     const query = "CALL actualizar_soluciones($1, $2, $3, $4, $5)";
     const params = [solucion_id, id_estudiante, id_actividad, null, respuesta];
 
@@ -63,10 +60,25 @@ const updateDevelopments = async (req, res) => {
   }
 };
 
+const updateGradeByDevelopment = async(req, res) => {
+  try{
+    const { id_actividad, nota } = req.body;
+    const query = "CALL actualizar_nota_solucion($1, $2)"
+    const params = [id_actividad, nota] 
+
+    await pool.query(query, params);
+    res.status(200).json(response(req.body, 200, "correcto", "actualización realizada satisfactoriamente"))
+
+  } catch(err){
+    return res.status(500).json(response(null, 500, "error", err))
+  }
+}
+
 module.exports = {
   getDevelopmentByActivity,
   getAllDevelopments,
   createDevelopment,
   deleteDevelopments,
   updateDevelopments,
+  updateGradeByDevelopment
 };

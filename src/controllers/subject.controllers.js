@@ -66,8 +66,19 @@ const updateSubjects = async (req, res) => {
 const getSubjectsByStudentId = async (req, res) => {
   try {
     const studentId = req.params.id;
-    const query = "select * from asignaturas a join estudiantes e on e.id_cursos = a.id_curso and e.identificacion = $1;";
+    const query =
+      "select * from asignaturas a join estudiantes e on e.id_cursos = a.id_curso and e.identificacion = $1;";
     const { rows: subjects } = await pool.query(query, [studentId]);
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ error: error.toString() }); // En caso de error, envía el error como respuesta
+  }
+};
+const getSubjectsByTeacherId = async (req, res) => {
+  try {
+    const teacherId = req.params.id;
+    const query = "select * from asignaturas where cedula_profesor = $1;";
+    const { rows: subjects } = await pool.query(query, [teacherId]);
     res.json(subjects);
   } catch (error) {
     res.status(500).json({ error: error.toString() }); // En caso de error, envía el error como respuesta
@@ -80,4 +91,5 @@ module.exports = {
   deleteSubjects,
   updateSubjects,
   getSubjectsByStudentId,
+  getSubjectsByTeacherId,
 };

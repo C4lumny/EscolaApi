@@ -11,6 +11,17 @@ const getAllTeachers = async (req, res) => {
   }
 };
 
+const getTeacherInfoById = async(req, res) => {
+  try {
+    const teacherId = req.params.id;
+    const query = 'SELECT * FROM profesores WHERE cedula = $1';
+    const { rows: teachers } = await pool.query(query, [teacherId])
+    res.json(teachers[0] || {});
+  } catch (error) {
+    res.status(500).json({ error: error.toString() }); // En caso de error, envía el error como respuesta
+  }
+};
+
 const createTeachers = async (req, res) => {
   try {
     const { cedula, nombres, apellidos, correo, telefono, usuario, contraseña } = req.body;
@@ -85,6 +96,7 @@ const updateTeachers = async (req, res) => {
 
 module.exports = {
   getAllTeachers,
+  getTeacherInfoById,
   createTeachers,
   deleteTeachers,
   updateTeachers,

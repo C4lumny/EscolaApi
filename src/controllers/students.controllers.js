@@ -109,8 +109,6 @@ const getStudentInfoById = async(req, res) => {
   }
 };
 
-
-
 module.exports = {
   getAllStudents,
   createStudent,
