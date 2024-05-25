@@ -7,6 +7,7 @@ const { subjectsRouter } = require("./routes/subject.routes");
 const { parentsRouter } = require("./routes/parents.routes");
 const { activitiesRouter } = require("./routes/activities.routes");
 const { developmentsRouter } = require("./routes/developments.routes");
+const { statisticsRouter } = require("./routes/statistics.routes");
 // 👇Import de utilidades
 const express = require("express");
 const cors = require("cors");
@@ -22,6 +23,7 @@ const routers = [
   parentsRouter,
   activitiesRouter,
   developmentsRouter,
+  statisticsRouter,
 ];
 
 // 👇 Uso de funciones de la app
