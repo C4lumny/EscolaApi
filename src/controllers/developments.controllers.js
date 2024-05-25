@@ -62,14 +62,17 @@ const updateDevelopments = async (req, res) => {
 
 const updateGradeByDevelopment = async(req, res) => {
   try{
-    const { id_actividad, nota } = req.body;
-    const query = "CALL actualizar_nota_solucion($1, $2)"
-    const params = [id_actividad, nota] 
+    const { id_actividad, nota, id_estudiante } = req.body;  
+    const query = "CALL actualizar_nota_solucion($1, $2, $3)"
+    const params = [id_actividad, nota, id_estudiante] 
+
+    console.log(parseInt(id_actividad), nota, id_estudiante);
 
     await pool.query(query, params);
     res.status(200).json(response(req.body, 200, "correcto", "actualización realizada satisfactoriamente"))
 
   } catch(err){
+    console.log(err);
     return res.status(500).json(response(null, 500, "error", err))
   }
 }

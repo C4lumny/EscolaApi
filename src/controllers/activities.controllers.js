@@ -72,7 +72,7 @@ const updateActivity = async (req, res) => {
 
     const query = "CALL actualizar_actividad($1, $2, $3, $4, $5, $6, $7)";
     const params = [
-      activity.id,
+      activity.actividad_id,
       updatedActivity.titulo,
       updatedActivity.descripcion,
       updatedActivity.date.from,
@@ -81,7 +81,9 @@ const updateActivity = async (req, res) => {
       parseInt(updatedActivity.estado) == 0 ? false : true,
     ];
 
-    await pool.query(query, params);
+    const test = await pool.query(query, params);
+    console.log(test);
+    
     res.status(200).json(response(req.body, 200, "correcto", "actualizacion realizado satisfactoriamente"));
   } catch (err) {
     console.error(err);

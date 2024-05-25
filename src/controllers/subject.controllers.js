@@ -9,6 +9,15 @@ const getAllSubjects = async (req, res) => {
     res.status(500).json(response(null, 500, "error", "Error al traer asignaturas"));
   }
 };
+const getSubjectsById = async (req, res) => {
+  const subjectId = req.params.id;
+  try {
+    const { rows: subjects } = await pool.query("SELECT * FROM vista_asignaturas where id = $1", [subjectId]);
+    res.status(200).json(response(subjects, 200, "ok", "correcto"));
+  } catch (err) {
+    res.status(500).json(response(null, 500, "error", "Error al traer asignaturas"));
+  }
+};
 
 const createSubjects = async (req, res) => {
   try {
@@ -87,6 +96,7 @@ const getSubjectsByTeacherId = async (req, res) => {
 
 module.exports = {
   getAllSubjects,
+  getSubjectsById,
   createSubjects,
   deleteSubjects,
   updateSubjects,

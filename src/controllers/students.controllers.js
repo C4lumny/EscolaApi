@@ -11,6 +11,17 @@ const getAllStudents = async (req, res) => {
   }
 };
 
+const getAllStudentsByCourse = async (req, res) => {
+  const courseId = req.params.id;
+  try {
+    const { rows: students } = await pool.query("SELECT * FROM vista_estudiantes where id_cursos = $1", [courseId]);
+    res.json(students);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 const createStudent = async (req, res) => {
   try {
     console.log(req.body);
@@ -114,5 +125,6 @@ module.exports = {
   createStudent,
   updateStudent,
   deleteStudent,
-  getStudentInfoById
+  getStudentInfoById,
+  getAllStudentsByCourse,
 };
